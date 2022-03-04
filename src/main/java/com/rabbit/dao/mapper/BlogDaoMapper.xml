@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rabbit.dao.BlogDao">
+    <sql id="blogColumns">
+        blog_id,blog_title,blog_body,blog_type,blog_image,user_id,blog_like_quantity
+    </sql>
+    <resultMap id="resultMap" type="com.rabbit.pojo.Blog">
+        <id column="blog_id" property="blogId"/>
+        <result column="blog_title" property="blogTitle"/>
+        <result column="blog_body" property="blogBody"/>
+        <result column="blog_type" property="blogType"/>
+        <result column="blog_image" property="blogImage"/>
+        <result column="user_id" property="userId"/>
+        <result column="blog_like_quantity" property="blogLikeQuantity"/>
+    </resultMap>
+
+    <insert id="addBlog" parameterType="Blog" useGeneratedKeys="true" keyProperty="blogId">
+        INSERT INTO tb_blog
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blogTitle != null">
+                blog_title,
+            </if>
+            <if test="blogBody != null">
+                blog_body,
+            </if>
+            <if test="blogType != null">
+                blog_type,
+            </if>
+            <if test="blogImage != null">
+                blog_image,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="value(" suffix=")" suffixOverrides=",">
+            <if test="blogTitle != null">
+                #{blogTitle},
+            </if>
+            <if test="blogBody != null">
+                #{blogBody},
+            </if>
+            <if test="blogType != null">
+                #{blogType},
+            </if>
+            <if test="blogImage != null">
+                #{blogImage},
+            </if>
+            <if test="userId != null">
+                #{userId},
+            </if>
+        </trim>
+    </insert>
+    <select id="listAllBlog" resultMap="resultMap">
+        SELECT <include refid="blogColumns"/>
+        FROM tb_blog
+    </select>
+    <delete id="deleteBlogById" parameterType="int">
+        DELETE FROM tb_blog
+        WHERE tb_blog.blog_id = #{blogId}
+    </delete>
+    <update id="updateBlog" parameterType="Blog">
+        UPDATE tb_blog
+        SET
+        <if test="blogTitle!=null">
+            blog_title = #{blogTitle},
+        </if>
+        <if test="blogBody!=null">
+            blog_body = #{blogBody},
+        </if>
+        <if test="blogType!=null">
+            blog_type = #{blogType},
+        </if>
+        <if test="blogImage!=null">
+            blog_image = #{blogImage},
+        </if>
+        <if test="userId!=null">
+            user_id = #{userId},
+        </if>
+        <if test="blogLikeQuantity!=null">
+            blog_like_quantity = #{blogLikeQuantity}
+        </if>
+        WHERE blog_id=#{blogId}
+    </update>
+    <select id="selectBlogById" resultMap="resultMap" parameterType="int">
+        SELECT * FROM tb_blog WHERE tb_blog.blog_id = #{blogId}
+    </select>
+    <select id="getBlogSum" resultType="Integer">
+        SELECT COUNT(1) FROM tb_blog
+    </select>
+    <select id="getBloglist" resultType="Blog">
+        SELECT * FROM tb_blog ORDER BY blog_id ASC LIMIT #{start},#{count}
+    </select>
+    <select id="listAllBlogByUserId" resultMap="resultMap" parameterType="int">
+        SELECT <include refid="blogColumns"/>
+        FROM tb_blog
+        WHERE user_id = #{userId}
+    </select>
+    <select id="selectTheFirstFour" resultMap="resultMap">
+        SELECT * FROM tb_blog ORDER BY blog_like_quantity  DESC LIMIT 0,4;
+    </select>
+    <select id="QueryFive" resultMap="resultMap">
+        SELECT * FROM tb_blog LIMIT 0,5;
+    </select>
+    <select id="selectBlogByBlogTypeFive" resultMap="resultMap" parameterType="int">
+        SELECT * FROM tb_blog WHERE blog_type=#{blogType} LIMIT 0,5;
+    </select>
+    <select id="selectBlogeBylike" resultMap="resultMap">
+        SELECT * FROM tb_blog WHERE
+        blog_like_quantity=(SELECT MAX(blog_like_quantity) FROM tb_blog)
+    </select>
+    <select id="selectBlogByType" resultMap="resultMap" parameterType="int">
+        SELECT * FROM tb_blog WHERE blog_type=#{blogType}
+    </select>
+    <select id="selectBlogByTitleAndBody" resultMap="resultMap" parameterType="Blog">
+        SELECT * FROM tb_blog WHERE blog_title LIKE "%"#{blogTitle}"%" OR blog_body LIKE "%"#{blogBody}"%"
+    </select>
+</mapper>

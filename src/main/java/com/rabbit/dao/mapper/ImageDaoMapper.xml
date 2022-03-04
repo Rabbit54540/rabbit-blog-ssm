@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rabbit.dao.ImageDao">
+    <resultMap id="resultMap" type="com.rabbit.pojo.Image">
+        <id column="id" property="id"/>
+        <result column="user_image" property="userImage"/>
+        <result column="user_id" property="userId"/>
+    </resultMap>
+    <insert id="addImage" parameterType="Image" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO tb_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userImage!=null">
+                user_image,
+            </if>
+            <if test="userId!=null">
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="value(" suffix=")" suffixOverrides=",">
+        <if test="userImage!=null">
+            #{userImage},
+        </if>
+        <if test="userId!=null">
+            #{userId},
+        </if>
+      </trim>
+    </insert>
+    <select id="selectImageByUserId" parameterType="int" resultMap="resultMap">
+        SELECT * FROM  tb_image WHERE user_id=#{userId}
+    </select>
+    <delete id="deleteImageById" parameterType="int">
+        DELETE FROM  tb_image WHERE id=#{id}
+    </delete>
+</mapper>

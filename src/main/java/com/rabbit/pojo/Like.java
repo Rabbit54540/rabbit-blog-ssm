@@ -1,0 +1,15 @@
+package com.rabbit.pojo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Like {
+    private Integer Id;
+    private Integer blogId;
+    private Integer userId;
+    private Integer state;
+}

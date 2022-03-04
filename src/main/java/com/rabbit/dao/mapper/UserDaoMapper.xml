@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rabbit.dao.UserDao">
+    <sql id="userColumns">
+        user_id,user_name,pass_word,user_email
+    </sql>
+    <resultMap id="userMap" type="com.rabbit.pojo.User">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="passWord" column="pass_word"/>
+        <result property="userEmail" column="user_email"/>
+    </resultMap>
+
+    <insert id="addUser" keyProperty="userId" parameterType="User" useGeneratedKeys="true">
+        INSERT INTO tb_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="passWord != null">
+                pass_word,
+            </if>
+            <if test="userEmail != null">
+                user_email,
+            </if>
+        </trim>
+        <trim prefix="value(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">
+                #{userName},
+            </if>
+            <if test="passWord != null">
+                #{passWord},
+            </if>
+            <if test="userEmail != null">
+                #{userEmail},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectUserByUserName" parameterType="String" resultMap="userMap">
+        SELECT <include refid="userColumns"/>
+        FROM tb_user
+        WHERE user_name = #{userName}
+    </select>
+
+    <select id="selectPasswordByUserName" parameterType="String" resultType="String">
+        SELECT pass_word
+        FROM tb_user
+        WHERE user_name = #{userName}
+    </select>
+</mapper>

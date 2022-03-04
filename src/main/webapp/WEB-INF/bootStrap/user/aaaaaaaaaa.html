@@ -1,0 +1,62 @@
+<!-- jquery实现动态点赞特效 -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        .container{
+            border:1px solid black;
+            padding:100px;
+        }
+        .item{
+            position:relative;
+            width:40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="item">
+        <span id="s1">赞</span>
+    </div>
+</div>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+<script>
+    $('#s1').click(function(){
+        addFavour(this);
+    });
+    function addFavour(self){
+        var fontsize = 15;
+        var top = 0;
+        var right = 0;
+        var opacity = 1;
+        var span = document.createElement('span');
+        $(span).text('+1');
+        $(self).parent().append(span);
+        $(span).css('color', 'green');
+        $(span).css('position', 'absolute');
+        $(span).css('top', top+'px');
+        $(span).css('right', right+'px');
+        $(span).css('fontSize', fontsize+'px');
+        $(span).css('opacity', opacity);
+        //设置定时器，不断更改字体大小，位置，透明度
+        var obj = setInterval(function(){
+            fontsize += 5
+            top -= 5;
+            right -= 5;
+            opacity -= 0.3
+            $(span).css('position', 'absolute');
+            $(span).css('top', top+'px');
+            $(span).css('right', right+'px');
+            $(span).css('fontSize', fontsize+'px');
+            $(span).css('opacity', opacity);
+            if(opacity < 0){
+                $(self).next().remove();
+                clearInterval(obj);
+            }
+        }, 80);
+    }
+</script>
+</body>
+</html>
